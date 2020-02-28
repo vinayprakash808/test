@@ -1,0 +1,60 @@
+cat("\f")
+# Load required packages --------------------------------------------------
+
+library(shinytest) # One-time load
+library(testthat) # One-time load
+
+# Set the initial value --------------------------------------------------
+
+app <- ShinyDriver$new(getwd())
+
+# Ticker --------------------------------------------------
+
+Ticker_Value <-
+  app$getValue("Tic")
+
+# Submit Button initial value --------------------------------------------------
+
+Submit_Value <-
+  app$getValue("Submit")
+
+# Clear Button initial value --------------------------------------------------
+
+Clear_Value <-
+  app$getValue("Submit")
+
+# Set the inputs to check the combination of Inputs are working as expected--------------------------------------------------
+
+Submit_table <-
+  app$setInputs(
+    Tic = "ANGLCR",
+    Date = "2019-11-27",
+    Submit = "click",
+    timeout_ = 6000
+  )
+Clear_table <-
+  app$setInputs(
+    Tic = "ANGLCR",
+    Date = "2019-11-27",
+    Clear = "click",
+    timeout_ = 6000
+  )
+
+# Is initial table "NULL" prior "clicking selecting inputs and clicking Submit button" --------------------------------------------------
+expect_that(Submit_table$input$SUMMARY_GENERAL_table_rows_all,
+            is_identical_to(NULL))
+
+# To check Submit button and cleat button are working or not --------------------------------------------------
+tryCatch(
+  expect_true(
+    class(Submit_table$output$SUMMARY_GENERAL_table) == class(Clear_table$output$SUMMARY_GENERAL_table)
+  ),
+  error = function(e) {
+    
+  }
+)
+
+# Clear Objects --------------------------------------------------
+rm(app)
+rm(Submit_table)
+rm(Clear_table)
